@@ -1,12 +1,15 @@
 package com.example.jetpackcomposeuploadfile.ui.presentation.viewmodels
 
+import androidx.compose.ui.text.resolveDefaults
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetpackcomposeuploadfile.data.response.FileUiState
 import com.example.myapp.data.remote.NetworkResult
-import com.example.myapp.domain.usecase.GetFilesUseCase
-import com.example.myapp.domain.usecase.GetRootUseCase
+import com.example.jetpackcomposeuploadfile.domain.usecase.GetFilesUseCase
+import com.example.jetpackcomposeuploadfile.domain.usecase.GetRootUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,10 +18,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FileViewModel @Inject constructor(
-    private val getFilesUseCase: GetFilesUseCase,
-    private val getRootUseCase: GetRootUseCase,
+
 ) : ViewModel() {
 
+    @Inject
+    lateinit var getFilesUseCase: GetFilesUseCase
+    @Inject
+    lateinit var getRootUseCase: GetRootUseCase
+
+    private var fileJOB: Job? = null
+
+    private var userJOB: Job? = null
     private val _uiStateFile = MutableStateFlow<FileUiState>(FileUiState.Loading)
     val uiStateFile: StateFlow<FileUiState> = _uiStateFile.asStateFlow()
 
@@ -29,34 +39,44 @@ class FileViewModel @Inject constructor(
     }
 
     fun loadRoot() {
-        viewModelScope.launch {
-            _uiStateFile.value = FileUiState.Loading
+        userJOB?.cancel()
 
-            when (val result = getRootUseCase()) {
-                is NetworkResult.Success -> {
-                    currentFolderId = result.data
-                    loadFiles(result.data)
-                }
-
-                is NetworkResult.Error -> {
-                    _uiStateFile.value = FileUiState.Error(result.exception.message ?: "Unknown error")
-                }
+        userJOB = viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _uiStateFile.value = FileUiState.Loading
+                    getRootUseCase.execute().collect { result ->
+                        if (result is NetworkResult.Success) {
+                            currentFolderId = result.data
+                            loadFiles(result.data)
+                        }
+                    }
+            } catch (exception: Exception) {
+                _uiStateFile.value = FileUiState.Error(
+                    exception.message ?: "Unknown error"
+                )
             }
         }
     }
 
+
     fun loadFiles(folderId: String) {
-        viewModelScope.launch {
-            _uiStateFile.value = FileUiState.Loading
-            currentFolderId = folderId
-            when (val result = getFilesUseCase(folderId)) {
-                is NetworkResult.Success -> {
-                    _uiStateFile.value = FileUiState.Success(result.data)
+        fileJOB?.cancel()
+
+        fileJOB = viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _uiStateFile.value = FileUiState.Loading
+                currentFolderId = folderId
+
+                getFilesUseCase.execute(folderId).collect { result ->
+                    if (result is NetworkResult.Success) {
+                        _uiStateFile.value = FileUiState.Success(result.data)
+                    }
                 }
 
-                is NetworkResult.Error -> {
-                    _uiStateFile.value = FileUiState.Error(result.exception.message ?: "Unknown error")
-                }
+            } catch (exception: Exception) {
+                _uiStateFile.value = FileUiState.Error(
+                    exception.message ?: "Unknown error"
+                )
             }
         }
     }

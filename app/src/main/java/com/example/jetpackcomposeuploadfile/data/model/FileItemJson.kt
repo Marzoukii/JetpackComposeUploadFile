@@ -2,6 +2,7 @@ package com.example.myapp.domain.model
 
 import com.google.gson.annotations.SerializedName
 
+
 data class FileItemJson(
     @SerializedName("id")               val id: String?=null,
     @SerializedName("parentId")         val parentId: String?=null,

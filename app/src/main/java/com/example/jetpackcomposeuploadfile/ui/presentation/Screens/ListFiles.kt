@@ -1,15 +1,26 @@
 package com.example.jetpackcomposeuploadfile.ui.presentation.Screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.*
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,152 +28,148 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.jetpackcomposeuploadfile.R
-import com.example.jetpackcomposeuploadfile.data.response.FileUiState
-import com.example.jetpackcomposeuploadfile.ui.presentation.viewmodels.FileViewModel
+import com.example.jetpackcomposeuploadfile.ui.theme.JetpackComposeUploadFileTheme
 import com.example.myapp.domain.model.FileItem
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 
+
+@Preview(showBackground = true)
 @Composable
-fun ListFiles(
-    viewModel: FileViewModel = hiltViewModel()
-) {
-    // 1. On observe l'état du ViewModel
-    val uiState by viewModel.uiStateFile.collectAsState()
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        // 2. On gère l'affichage selon l'état
-        when (val state = uiState) {
-            is FileUiState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = Color.White
-                )
-            }
-
-            is FileUiState.Error -> {
-                Text(
-                    text = state.message,
-                    color = Color.Red,
-                    modifier = Modifier.align(Alignment.Center).padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            is FileUiState.Success -> {
-                if (state.files.isEmpty()) {
-                    Text(
-                        text = "Aucun fichier trouvé",
-                        color = Color.Gray,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                } else {
-                    FileContentList(state.files)
-                }
-            }
-        }
+fun GreetingPreview() {
+    JetpackComposeUploadFileTheme {
+        FileContentList(
+            files = FakeData.fileItems
+        )
     }
 }
+//@Composable
+//fun ListFiles(
+//    viewModel: FileViewModel = hiltViewModel()
+//) {
+//    // 1. On observe l'état du ViewModel
+//    val uiState by viewModel.uiStateFile.collectAsState()
+//
+//    Box(modifier = Modifier.fillMaxSize()) {
+//        // 2. On gère l'affichage selon l'état
+//        when (val state = uiState) {
+//            is FileUiState.Loading -> {
+//                CircularProgressIndicator(
+//                    modifier = Modifier.align(Alignment.Center),
+//                    color = Color.White
+//                )
+//            }
+//
+//            is FileUiState.Error -> {
+//                Text(
+//                    text = state.message,
+//                    color = Color.Red,
+//                    modifier = Modifier.align(Alignment.Center).padding(16.dp),
+//                    textAlign = TextAlign.Center
+//                )
+//            }
+//
+//            is FileUiState.Success -> {
+//                if (state.files.isEmpty()) {
+//                    Text(
+//                        text = "Aucun fichier trouvé",
+//                        color = Color.Gray,
+//                        modifier = Modifier.align(Alignment.Center)
+//                    )
+//                } else {
+//                    FileContentList(FakeData.fileItems)
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun FileContentList(files: List<FileItem>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        // 3. On utilise items(files) pour boucler sur la vraie liste
-        items(files) { file ->
-            FileRow(file)
-        }
-    }
-}
-
-@Composable
-fun FileRow(file: FileItem) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Icon
-        Image(
-            modifier = Modifier.size(40.dp),
-            painter = painterResource(
-                id = if (file.isDirectory == true) R.drawable.ic_folder else R.drawable.ic_file
-            ),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(if (file.isDirectory == true) Color(0xFFFFC107) else Color.DarkGray)
-        )
-
-        // Name and Size
-        Column(
-            modifier = Modifier
-                .padding(start = 12.dp)
-                .weight(1f),
-            verticalArrangement = Arrangement.Center
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Text(
-                text = file.name?:"",
-                color = Color.Black,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = if (file.isDirectory == true) "Dossier" else formatSize(file.size),
-                color = Color.Gray,
-                style = MaterialTheme.typography.bodySmall
-            )
+            items(files) { file ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Image(
+                        modifier = Modifier.size(40.dp),
+                        painter = painterResource(
+                            id = if (file.isDirectory == true) R.drawable.ic_folder else R.drawable.ic_file
+                        ),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(if (file.isDirectory == true) Color.Cyan else Color.DarkGray)
+                    )
+
+
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 25.dp)
+                            .weight(1f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = file.name ?: "",
+                            color = Color.Black,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = if (file.isDirectory == true) "Dossier" else file.size.toString(),
+                            color = Color.Gray,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+
+                    Text(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        text = file.date ?: "",
+                        color = Color.Gray,
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.End
+                    )
+
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Options",
+                            tint = Color.Gray
+                        )
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_next),
+                            contentDescription = "Ouvrir",
+                            tint = Color.Gray
+                        )
+                    }
+
+                }
+            }
         }
 
-        // Date
-        Text(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            text = formatDate(file.date),
-            color = Color.Gray,
-            style = MaterialTheme.typography.bodySmall,
-            textAlign = TextAlign.End
-        )
-
-        // Actions
-        IconButton(onClick = { /* Options */ }) {
+        FloatingActionButton(
+            onClick = { }, modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
             Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "Options",
-                tint = Color.Gray
-            )
-        }
-
-        IconButton(onClick = { /* Ouvrir */ }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_next),
-                contentDescription = "Ouvrir",
-                tint = Color.Gray
+                imageVector = Icons.Default.Add, contentDescription = "add folder"
             )
         }
     }
 }
 
-fun formatDate(dateString: String): String {
-    return try {
-        val odt = OffsetDateTime.parse(dateString)
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm")
-        odt.format(formatter)
-    } catch (e: Exception) {
-        dateString.take(10)
-    }
-}
 
-fun formatSize(size: Long?): String {
-    if (size == null) return "0 octets"
-    if (size < 1024) return "$size octets"
-    val kb = size / 1024.0
-    if (kb < 1024) return "%.1f Ko".format(kb)
-    val mb = kb / 1024.0
-    return "%.1f Mo".format(mb)
-}

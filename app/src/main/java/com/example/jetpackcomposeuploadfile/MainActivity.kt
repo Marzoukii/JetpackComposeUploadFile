@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.jetpackcomposeuploadfile.ui.presentation.Screens.ListFiles
 import com.example.jetpackcomposeuploadfile.ui.theme.JetpackComposeUploadFileTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,6 +33,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     JetpackComposeUploadFileTheme {
-        ListFiles()
+        //ListFiles()
     }
 }
