@@ -3,11 +3,11 @@ package com.example.myapp.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class FileItemJson(
-    @SerializedName("id")               val id: String,
-    @SerializedName("parentId")         val parentId: String?,
-    @SerializedName("name")             val name: String,
-    @SerializedName("isDir")            val isDir: Boolean,
-    @SerializedName("modificationDate") val modificationDate: String,
-    @SerializedName("size")             val size: Long?,
-    @SerializedName("contentType")      val contentType: String?
+    @SerializedName("id")               val id: String?=null,
+    @SerializedName("parentId")         val parentId: String?=null,
+    @SerializedName("name")             val name: String?=null,
+    @SerializedName("isDir")            val isDir: Boolean?=null,
+    @SerializedName("modificationDate") val modificationDate: String?=null,
+    @SerializedName("size")             val size: Long?=null,
+    @SerializedName("contentType")      val contentType: String?=null
 )

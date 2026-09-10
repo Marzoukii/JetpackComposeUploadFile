@@ -1,4 +1,4 @@
-package com.example.jetpackcomposeuploadfile.domain.enums
+package com.example.jetpackcomposeuploadfile.data.response
 
 import com.example.myapp.domain.model.FileItem
 

@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.jetpackcomposeuploadfile.R
-import com.example.jetpackcomposeuploadfile.domain.enums.FileUiState
+import com.example.jetpackcomposeuploadfile.data.response.FileUiState
 import com.example.jetpackcomposeuploadfile.ui.presentation.viewmodels.FileViewModel
 import com.example.myapp.domain.model.FileItem
 import java.time.OffsetDateTime
@@ -31,7 +31,7 @@ fun ListFiles(
     viewModel: FileViewModel = hiltViewModel()
 ) {
     // 1. On observe l'état du ViewModel
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiStateFile.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         // 2. On gère l'affichage selon l'état
@@ -93,10 +93,10 @@ fun FileRow(file: FileItem) {
         Image(
             modifier = Modifier.size(40.dp),
             painter = painterResource(
-                id = if (file.isDirectory) R.drawable.ic_folder else R.drawable.ic_file
+                id = if (file.isDirectory == true) R.drawable.ic_folder else R.drawable.ic_file
             ),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(if (file.isDirectory) Color(0xFFFFC107) else Color.DarkGray)
+            colorFilter = ColorFilter.tint(if (file.isDirectory == true) Color(0xFFFFC107) else Color.DarkGray)
         )
 
         // Name and Size
@@ -107,14 +107,14 @@ fun FileRow(file: FileItem) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = file.name,
+                text = file.name?:"",
                 color = Color.Black,
                 style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = if (file.isDirectory) "Dossier" else formatSize(file.size),
+                text = if (file.isDirectory == true) "Dossier" else formatSize(file.size),
                 color = Color.Gray,
                 style = MaterialTheme.typography.bodySmall
             )

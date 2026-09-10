@@ -2,7 +2,7 @@ package com.example.jetpackcomposeuploadfile.ui.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetpackcomposeuploadfile.domain.enums.FileUiState
+import com.example.jetpackcomposeuploadfile.data.response.FileUiState
 import com.example.myapp.data.remote.NetworkResult
 import com.example.myapp.domain.usecase.GetFilesUseCase
 import com.example.myapp.domain.usecase.GetRootUseCase
@@ -19,8 +19,8 @@ class FileViewModel @Inject constructor(
     private val getRootUseCase: GetRootUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<FileUiState>(FileUiState.Loading)
-    val uiState: StateFlow<FileUiState> = _uiState.asStateFlow()
+    private val _uiStateFile = MutableStateFlow<FileUiState>(FileUiState.Loading)
+    val uiStateFile: StateFlow<FileUiState> = _uiStateFile.asStateFlow()
 
     private var currentFolderId: String? = null
 
@@ -30,7 +30,7 @@ class FileViewModel @Inject constructor(
 
     fun loadRoot() {
         viewModelScope.launch {
-            _uiState.value = FileUiState.Loading
+            _uiStateFile.value = FileUiState.Loading
 
             when (val result = getRootUseCase()) {
                 is NetworkResult.Success -> {
@@ -39,7 +39,7 @@ class FileViewModel @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    _uiState.value = FileUiState.Error(result.exception.message ?: "Unknown error")
+                    _uiStateFile.value = FileUiState.Error(result.exception.message ?: "Unknown error")
                 }
             }
         }
@@ -47,15 +47,15 @@ class FileViewModel @Inject constructor(
 
     fun loadFiles(folderId: String) {
         viewModelScope.launch {
-            _uiState.value = FileUiState.Loading
+            _uiStateFile.value = FileUiState.Loading
             currentFolderId = folderId
             when (val result = getFilesUseCase(folderId)) {
                 is NetworkResult.Success -> {
-                    _uiState.value = FileUiState.Success(result.data)
+                    _uiStateFile.value = FileUiState.Success(result.data)
                 }
 
                 is NetworkResult.Error -> {
-                    _uiState.value = FileUiState.Error(result.exception.message ?: "Unknown error")
+                    _uiStateFile.value = FileUiState.Error(result.exception.message ?: "Unknown error")
                 }
             }
         }
