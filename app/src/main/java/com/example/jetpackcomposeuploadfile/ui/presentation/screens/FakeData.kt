@@ -1,4 +1,4 @@
-package com.example.jetpackcomposeuploadfile.ui.presentation.Screens
+package com.example.jetpackcomposeuploadfile.ui.presentation.screens
 
 import com.example.myapp.domain.model.FileItem
 
@@ -9,7 +9,8 @@ object FakeData {
             id = "1",
             name = "Documents",
             isDirectory = true,
-            date = "10/09/2026"
+            date = "10/09/2026",
+            contentType = "application/pdf"
         ),
         FileItem(
             id = "2",

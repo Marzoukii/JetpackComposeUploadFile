@@ -1,4 +1,4 @@
-package com.example.myapp.data.remote
+package com.example.jetpackcomposeuploadfile.data
 
 sealed class NetworkResult<out T> {
     data class Success<T>(val data: T) : NetworkResult<T>()
