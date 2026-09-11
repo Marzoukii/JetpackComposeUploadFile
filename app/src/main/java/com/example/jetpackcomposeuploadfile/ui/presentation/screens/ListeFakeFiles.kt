@@ -44,7 +44,6 @@ fun GreetingPreviewFake() {
 @Composable
 fun ListFilesFake(files: List<FileItem>) {
     Box(modifier = Modifier.fillMaxWidth()) {
-
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -98,7 +97,7 @@ fun ListFilesFake(files: List<FileItem>) {
                     }
                     IconButton(onClick = {}) {
                         Icon(
-                            contentDescription = "Options",
+                            contentDescription = "ouvrir",
                             painter = painterResource(id = R.drawable.ic_next),
                             tint = Color.Gray
                         )
