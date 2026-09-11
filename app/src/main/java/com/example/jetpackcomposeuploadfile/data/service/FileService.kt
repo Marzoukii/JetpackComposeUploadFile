@@ -11,5 +11,5 @@ interface FileService {
     suspend fun getCurrentUser(): UserJson
 
     @GET("items/{id}")
-    suspend fun getFolderContent(@Path("id") folderId: String): List<FileItemJson>
+    suspend fun getFolderContent(@Path("id") folderId: String?): List<FileItemJson>
 }

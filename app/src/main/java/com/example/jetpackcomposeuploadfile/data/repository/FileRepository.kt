@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class FileRepository @Inject constructor(
-
-) {
+class FileRepository @Inject constructor() {
     @Inject
     lateinit var api: FileService
     @Inject
@@ -41,7 +39,7 @@ class FileRepository @Inject constructor(
         }
     }
 
-    suspend fun getFolderContent(folderId: String): Flow<NetworkResult<List<FileItem>>> = flow {
+    suspend fun getFolderContent(folderId: String?): Flow<NetworkResult<List<FileItem>>> = flow {
     try {
             NetworkResult.Success(mapper.toFileItemsModel(api.getFolderContent(folderId)))
         } catch (e: Exception) {

@@ -17,10 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FileViewModel @Inject constructor(
-
-) : ViewModel() {
-
+class FileViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var getFilesUseCase: GetFilesUseCase
     @Inject
@@ -32,21 +29,17 @@ class FileViewModel @Inject constructor(
     private val _uiStateFile = MutableStateFlow<FileUiState>(FileUiState.Loading)
     val uiStateFile: StateFlow<FileUiState> = _uiStateFile.asStateFlow()
 
-    private var currentFolderId: String? = null
-
     init {
         loadRoot()
     }
 
     fun loadRoot() {
-        userJOB?.cancel()
-
+        userJOB?.start()
         userJOB = viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiStateFile.value = FileUiState.Loading
                     getRootUseCase.execute().collect { result ->
                         if (result is NetworkResult.Success) {
-                            currentFolderId = result.data
                             loadFiles(result.data)
                         }
                     }
@@ -56,16 +49,14 @@ class FileViewModel @Inject constructor(
                 )
             }
         }
+        userJOB?.cancel()
     }
 
-
-    fun loadFiles(folderId: String) {
-        fileJOB?.cancel()
-
+    fun loadFiles(folderId: String?) {
+        fileJOB?.start()
         fileJOB = viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiStateFile.value = FileUiState.Loading
-                currentFolderId = folderId
 
                 getFilesUseCase.execute(folderId).collect { result ->
                     if (result is NetworkResult.Success) {
@@ -79,5 +70,6 @@ class FileViewModel @Inject constructor(
                 )
             }
         }
+        fileJOB?.cancel()
     }
 }

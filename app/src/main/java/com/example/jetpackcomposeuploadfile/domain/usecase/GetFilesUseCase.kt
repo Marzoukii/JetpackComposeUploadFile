@@ -12,7 +12,7 @@ class GetFilesUseCase @Inject constructor() {
     @Inject
     lateinit var repository: FileRepository
 
-    fun execute(folderId: String): Flow<NetworkResult<List<FileItem>>> = flow {
+    fun execute(folderId: String?): Flow<NetworkResult<List<FileItem>>> = flow {
         repository.getFolderContent(folderId).collect {
             emit(it)
         }
