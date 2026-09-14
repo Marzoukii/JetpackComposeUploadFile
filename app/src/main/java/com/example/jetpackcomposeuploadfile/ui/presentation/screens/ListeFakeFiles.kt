@@ -15,11 +15,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,13 +46,18 @@ fun GreetingPreviewFake() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListFilesFake(files: List<FileItem>) {
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        topBar={
+            TopAppBar(title = {Text("My Files")},
+                colors = TopAppBarDefaults.
+                topAppBarColors(Color.Cyan))
+        })
+    {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 40.dp),
+            modifier = Modifier.fillMaxSize().padding(top = 150.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
@@ -117,7 +127,7 @@ fun ListFilesFake(files: List<FileItem>) {
                             }
                         }
 
-                }
+                    }
 
                 }
 
@@ -125,19 +135,22 @@ fun ListFilesFake(files: List<FileItem>) {
             }
 
         }
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            onClick = {}
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "add folder"
-            )
-            }
+//        FloatingActionButton(
+//            modifier = Modifier
+//                .align(Alignment.BottomEnd)
+//                .padding(16.dp),
+//            onClick = {}
+//        ) {
+//            Icon(
+//                imageVector = Icons.Default.Add,
+//                contentDescription = "add folder"
+//            )
+//        }
+    }
 
-        }
+
+
+
     }
 
 

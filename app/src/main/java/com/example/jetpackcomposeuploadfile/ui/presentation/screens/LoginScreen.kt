@@ -55,9 +55,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
         ) {
             OutlinedTextField(
-                modifier = Modifier
-                    .width(250.dp)
-                    .height(70.dp),
+                modifier = Modifier.width(250.dp).height(70.dp),
                 value = username,
                 onValueChange = { username = it }, // Met à jour le texte
                 label = { Text(text = "Email") },
