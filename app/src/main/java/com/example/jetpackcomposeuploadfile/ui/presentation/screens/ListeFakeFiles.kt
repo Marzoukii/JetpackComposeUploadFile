@@ -45,7 +45,9 @@ fun GreetingPreviewFake() {
 fun ListFilesFake(files: List<FileItem>) {
     Box(modifier = Modifier.fillMaxWidth()) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 40.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
@@ -88,20 +90,35 @@ fun ListFilesFake(files: List<FileItem>) {
                         color = Color.Gray,
                         style = MaterialTheme.typography.bodyMedium,
                     )
-                    IconButton(onClick = {}) {
-                        Icon(
-                            contentDescription = "Options",
-                            imageVector = Icons.Default.MoreVert,
-                            tint = Color.Gray
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            contentDescription = "ouvrir",
-                            painter = painterResource(id = R.drawable.ic_next),
-                            tint = Color.Gray
-                        )
-                    }
+                    Row(modifier = Modifier.padding(start = 4.dp).weight(1f),
+                        horizontalArrangement= Arrangement.End) {
+                        if (file.isDirectory == true) {
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    contentDescription = "Options",
+                                    imageVector = Icons.Default.MoreVert,
+                                    tint = Color.Gray
+                                )
+                            }
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    contentDescription = "ouvrir",
+                                    painter = painterResource(id = R.drawable.ic_next),
+                                    tint = Color.Gray
+                                )
+                            }
+                        } else{
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    contentDescription = "Options",
+                                    imageVector = Icons.Default.MoreVert,
+                                    tint = Color.Gray
+                                )
+                            }
+                        }
+
+                }
+
                 }
 
 
