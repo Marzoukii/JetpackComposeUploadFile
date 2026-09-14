@@ -18,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FileViewModel @Inject constructor(private var getFilesUseCase: GetFilesUseCase, private var getRootUseCase: GetRootUseCase) : ViewModel() {
     private var fileJOB: Job? = null
-
     private var userJOB: Job? = null
     private val _uiStateFile = MutableStateFlow<FileUiState>(FileUiState.Loading)
     val uiStateFile: StateFlow<FileUiState> = _uiStateFile.asStateFlow()

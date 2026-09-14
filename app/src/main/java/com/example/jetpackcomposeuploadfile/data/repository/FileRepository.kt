@@ -13,9 +13,9 @@ class FileRepository @Inject constructor( private var api: FileService , private
 
     suspend fun getCurrentUser(): Flow<NetworkResult<User>> = flow {
         try {
-            NetworkResult.Success(mapper.toUsersModel(api.getCurrentUser()))
+            emit(NetworkResult.Success(mapper.toUsersModel(api.getCurrentUser())))
         } catch (e: Exception) {
-            NetworkResult.Error(e)
+            emit(NetworkResult.Error(e))
         }
     }
     suspend fun getRootFolderId(): Flow<NetworkResult<String>> = flow {
@@ -27,12 +27,13 @@ class FileRepository @Inject constructor( private var api: FileService , private
         }
     }
 
-    suspend fun getFolderContent(folderId: String?): Flow<NetworkResult<List<FileItem>>> = flow {
+    fun getFolderContent(folderId: String?): Flow<NetworkResult<List<FileItem>>> = flow {
         try {
             val response = api.getFolderContent(folderId)
-            NetworkResult.Success(mapper.toFileItemsModel(response))
+
+            emit(NetworkResult.Success(mapper.toFileItemsModel(response)))
         } catch (e: Exception) {
-            NetworkResult.Error(e)
+            emit(NetworkResult.Error(e))
         }
     }
 

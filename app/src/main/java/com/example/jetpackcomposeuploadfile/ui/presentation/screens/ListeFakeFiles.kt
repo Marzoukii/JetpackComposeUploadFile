@@ -73,7 +73,7 @@ fun ListFilesFake(files: List<FileItem>) {
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Image(
-                        modifier = Modifier.size(40.dp),
+                        modifier = Modifier.size(40.dp).align(Alignment.CenterVertically),
                         painter = if (file.isDirectory == true) painterResource(id = R.drawable.ic_folder)
                         else painterResource(id = R.drawable.ic_file),
                         contentDescription = null,
@@ -144,7 +144,7 @@ fun ListFilesFake(files: List<FileItem>) {
 
     },
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = {},containerColor= Color.Cyan) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         },
