@@ -2,50 +2,49 @@ package com.example.jetpackcomposeuploadfile.data.repository
 
 import com.example.jetpackcomposeuploadfile.data.service.FileService
 import com.example.myapp.data.mapper.FileMapper
-import com.example.myapp.data.remote.NetworkResult
+import com.example.jetpackcomposeuploadfile.data.NetworkResult
 import com.example.myapp.domain.model.FileItem
 import com.example.myapp.domain.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class FileRepository @Inject constructor(
+class FileRepository @Inject constructor( private var api: FileService , private  var mapper: FileMapper) {
 
-) {
-    @Inject
-    lateinit var api: FileService
-    @Inject
-    lateinit var mapper: FileMapper
-    suspend fun getCurrentUser(): Flow<NetworkResult<User>> =  flow {
-   try {
-            NetworkResult.Success(
-                mapper.toUsersModel(api.getCurrentUser())
-            )
+    suspend fun getCurrentUser(): Flow<NetworkResult<User>> = flow {
+        try {
+            emit(NetworkResult.Success(mapper.toUsersModel(api.getCurrentUser())))
         } catch (e: Exception) {
-            NetworkResult.Error(e)
+            emit(NetworkResult.Error(e))
         }
     }
-
-    fun getRootFolderId(): Flow<NetworkResult<String>> =
-        flow {
+    suspend fun getRootFolderId(): Flow<NetworkResult<String>> = flow {
         try {
-            val response = api.getCurrentUser()
-
-            emit(
-                NetworkResult.Success(
-                    response.rootItem?.id.orEmpty()
-                )
-            )
+            val response = api.getCurrentUser().rootItem?.id.orEmpty()
+            emit(NetworkResult.Success(response))
         } catch (e: Exception) {
             emit(NetworkResult.Error(e))
         }
     }
 
-    suspend fun getFolderContent(folderId: String): Flow<NetworkResult<List<FileItem>>> = flow {
-    try {
-            NetworkResult.Success(mapper.toFileItemsModel(api.getFolderContent(folderId)))
+    fun getFolderContent(folderId: String?): Flow<NetworkResult<List<FileItem>>> = flow {
+        try {
+            val response = api.getFolderContent(folderId)
+
+            emit(NetworkResult.Success(mapper.toFileItemsModel(response)))
         } catch (e: Exception) {
-            NetworkResult.Error(e)
+            emit(NetworkResult.Error(e))
         }
     }
+
+    suspend fun createFolder(parentId: String, folderName: String): Flow<NetworkResult<FileItem>> =
+        flow {
+            try {
+                val body = mapOf("name" to folderName)
+                val response = api.createFolder(parentId, body)
+                emit(NetworkResult.Success(response))
+            } catch (e: Exception) {
+                emit(NetworkResult.Error(e))
+            }
+        }
 }
