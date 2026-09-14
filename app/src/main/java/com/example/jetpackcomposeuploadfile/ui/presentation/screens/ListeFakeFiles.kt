@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,10 +55,13 @@ fun ListFilesFake(files: List<FileItem>) {
             TopAppBar(title = {Text("My Files")},
                 colors = TopAppBarDefaults.
                 topAppBarColors(Color.Cyan))
-        })
-    {
+        },
+
+    content = {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(top = 150.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 150.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
@@ -100,7 +104,9 @@ fun ListFilesFake(files: List<FileItem>) {
                         color = Color.Gray,
                         style = MaterialTheme.typography.bodyMedium,
                     )
-                    Row(modifier = Modifier.padding(start = 4.dp).weight(1f),
+                    Row(modifier = Modifier
+                        .padding(start = 4.dp)
+                        .weight(1f),
                         horizontalArrangement= Arrangement.End) {
                         if (file.isDirectory == true) {
                             IconButton(onClick = {}) {
@@ -135,18 +141,15 @@ fun ListFilesFake(files: List<FileItem>) {
             }
 
         }
-//        FloatingActionButton(
-//            modifier = Modifier
-//                .align(Alignment.BottomEnd)
-//                .padding(16.dp),
-//            onClick = {}
-//        ) {
-//            Icon(
-//                imageVector = Icons.Default.Add,
-//                contentDescription = "add folder"
-//            )
-//        }
-    }
+
+    },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {}) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
+    )
 
 
 
