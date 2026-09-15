@@ -38,7 +38,7 @@ interface FileService {
     ): FileItem
 
     @DELETE("items/{id}")
-    suspend fun deleteItem(@Path("id") itemId: String): Response<Unit>
+    suspend fun deleteItem(@Path("id") itemId: String?): Response<Unit>
 
     @GET("items/{id}/data")
     @Streaming

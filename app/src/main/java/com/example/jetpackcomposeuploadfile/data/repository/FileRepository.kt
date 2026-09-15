@@ -47,4 +47,18 @@ class FileRepository @Inject constructor( private var api: FileService , private
                 emit(NetworkResult.Error(e))
             }
         }
+
+    fun deleteItem(folderId: String?): Flow<NetworkResult<Unit>> = flow {
+        try {
+            val response = api.deleteItem(folderId)
+
+            if (response.isSuccessful) {
+                emit(NetworkResult.Success(Unit))
+            } else {
+                emit(NetworkResult.Error(Exception("Delete failed with code: ${response.code()}")))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e))
+        }
+    }
 }
