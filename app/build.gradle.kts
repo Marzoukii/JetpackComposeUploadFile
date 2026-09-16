@@ -50,6 +50,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    
+    // Ajout des icônes étendues (pour CreateNewFolder, UploadFile, etc.)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // Retrofit
     implementation(libs.retrofit)

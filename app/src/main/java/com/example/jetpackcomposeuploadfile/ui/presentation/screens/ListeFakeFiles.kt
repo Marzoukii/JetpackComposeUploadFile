@@ -15,18 +15,27 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +59,41 @@ fun GreetingPreviewFake() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListFilesFake(files: List<FileItem>) {
+
+    var showCreateFolderDialog by remember { mutableStateOf(false) }
+    var folderName by remember { mutableStateOf("") }
+
+    if (showCreateFolderDialog) {
+        AlertDialog(
+            onDismissRequest = { showCreateFolderDialog = false },
+            title = { Text("Nouveau dossier") },
+            text = {
+                OutlinedTextField(
+                    value = folderName,
+                    onValueChange = { folderName = it },
+                    label = { Text("Nom du dossier") },
+                    singleLine = true
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    if (folderName.isNotBlank()) {
+                        //  fileViewModel.createFolder(folderName)
+                        folderName = ""
+                        showCreateFolderDialog = false
+                    }
+                }) {
+                    Text("Créer")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showCreateFolderDialog = false }) {
+                    Text("Annuler")
+                }
+            }
+        )
+    }
+
     Scaffold(modifier = Modifier.fillMaxSize(),
         topBar={
             TopAppBar(title = {Text("My Files")},
@@ -57,13 +101,13 @@ fun ListFilesFake(files: List<FileItem>) {
                 topAppBarColors(Color.Cyan))
         },
 
-    content = {
+    content = {innerPadding->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 150.dp),
+                .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(4.dp),
-            contentPadding = PaddingValues(8.dp)
+            contentPadding = PaddingValues(top = 80.dp, start = 16.dp, end = 16.dp)
         ) {
             items(files) { file ->
                 Row(
@@ -109,14 +153,17 @@ fun ListFilesFake(files: List<FileItem>) {
                         .weight(1f),
                         horizontalArrangement= Arrangement.End) {
                         if (file.isDirectory == true) {
-                            IconButton(onClick = {}) {
+                            IconButton(onClick = {
+                            }) {
                                 Icon(
-                                    contentDescription = "Options",
-                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = "supprimer",
+                                    painter = painterResource(id = R.drawable.ic_delete_24),
                                     tint = Color.Gray
                                 )
                             }
-                            IconButton(onClick = {}) {
+                            IconButton(onClick = {
+
+                            }) {
                                 Icon(
                                     contentDescription = "ouvrir",
                                     painter = painterResource(id = R.drawable.ic_next),
@@ -126,13 +173,12 @@ fun ListFilesFake(files: List<FileItem>) {
                         } else{
                             IconButton(onClick = {}) {
                                 Icon(
-                                    contentDescription = "Options",
-                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = "supprimer",
+                                    painter = painterResource(id = R.drawable.ic_delete_24),
                                     tint = Color.Gray
                                 )
                             }
                         }
-
                     }
 
                 }
@@ -144,7 +190,9 @@ fun ListFilesFake(files: List<FileItem>) {
 
     },
         floatingActionButton = {
-            FloatingActionButton(onClick = {},containerColor= Color.Cyan) {
+            FloatingActionButton(onClick = {
+                showCreateFolderDialog = true
+            },containerColor= Color.Cyan) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         },
@@ -155,5 +203,7 @@ fun ListFilesFake(files: List<FileItem>) {
 
 
     }
+
+
 
 
