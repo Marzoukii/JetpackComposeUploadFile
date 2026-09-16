@@ -51,7 +51,7 @@ class FileViewModel @Inject constructor(
                 )
             }
         }
-        userJOB?.cancel()
+      //  userJOB?.cancel()
     }
 
     fun loadFiles(folderId: String?) {
@@ -72,7 +72,7 @@ class FileViewModel @Inject constructor(
                 )
             }
         }
-        fileJOB?.cancel()
+       // fileJOB?.cancel()
     }
 
     fun createFolder(name: String,folderId: String) {

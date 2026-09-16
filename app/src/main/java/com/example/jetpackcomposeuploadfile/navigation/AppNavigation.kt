@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.jetpackcomposeuploadfile.ui.presentation.screens.FakeData
+import com.example.jetpackcomposeuploadfile.ui.presentation.screens.ListFiles
 import com.example.jetpackcomposeuploadfile.ui.presentation.screens.ListFilesFake
 import com.example.jetpackcomposeuploadfile.ui.presentation.screens.LoginScreen
 
@@ -25,7 +26,7 @@ fun AppNavigation() {
         }
 
         composable("listFiles") {
-            ListFilesFake(FakeData.fileItems)
+            ListFiles()
         }
     }
 }
