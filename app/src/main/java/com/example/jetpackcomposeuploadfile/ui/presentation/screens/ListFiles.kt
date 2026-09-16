@@ -97,7 +97,7 @@ fun ListFiles(
 //                        modifier = Modifier.align(Alignment.Center)
 //                    )
                 } else {
-                    ListFiles(state.files)
+                    ListFilesContent(state.files, viewModel)
                 }
             }
         }
@@ -106,7 +106,7 @@ fun ListFiles(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListFiles(files: List<FileItem>) {
+fun ListFilesContent(files: List<FileItem>, viewModel: FileViewModel) {
 
     var showCreateFolderDialog by remember { mutableStateOf(false) }
     var folderName by remember { mutableStateOf("") }
@@ -126,7 +126,7 @@ fun ListFiles(files: List<FileItem>) {
             confirmButton = {
                 Button(onClick = {
                     if (folderName.isNotBlank()) {
-                        //  fileViewModel.createFolder(folderName)
+                        viewModel.createFolder(folderName)
                         folderName = ""
                         showCreateFolderDialog = false
                     }
@@ -203,6 +203,7 @@ fun ListFiles(files: List<FileItem>) {
                             horizontalArrangement= Arrangement.End) {
                             if (file.isDirectory == true) {
                                 IconButton(onClick = {
+                                    file.id?.let { viewModel.deleteItem(it) }
                                 }) {
                                     Icon(
                                         contentDescription = "supprimer",
@@ -220,7 +221,9 @@ fun ListFiles(files: List<FileItem>) {
                                     )
                                 }
                             } else{
-                                IconButton(onClick = {}) {
+                                IconButton(onClick = {
+                                    file.id?.let { viewModel.deleteItem(it) }
+                                }) {
                                     Icon(
                                         contentDescription = "supprimer",
                                         painter = painterResource(id = R.drawable.ic_delete_24),

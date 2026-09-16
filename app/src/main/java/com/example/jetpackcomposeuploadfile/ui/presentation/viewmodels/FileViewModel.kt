@@ -31,87 +31,87 @@ class FileViewModel @Inject constructor(
     private val _uiStateFile = MutableStateFlow<FileUiState>(FileUiState.Loading)
     val uiStateFile: StateFlow<FileUiState> = _uiStateFile.asStateFlow()
 
+    private var currentFolderId: String? = null
+
     init {
         loadRoot()
     }
 
     fun loadRoot() {
-        userJOB?.start()
+        userJOB?.cancel()
         userJOB = viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiStateFile.value = FileUiState.Loading
                 getRootUseCase.execute().collect { result ->
-                    if (result is NetworkResult.Success) {
-                        loadFiles(result.data)
+                    when (result) {
+                        is NetworkResult.Success -> {
+                            currentFolderId = result.data
+                            loadFiles(result.data)
+                        }
+                        is NetworkResult.Error -> {
+                            _uiStateFile.value = FileUiState.Error(result.exception.message ?: "Error Root")
+                        }
                     }
                 }
             } catch (exception: Exception) {
-                _uiStateFile.value = FileUiState.Error(
-                    exception.message ?: "Unknown error"
-                )
+                _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
             }
         }
-      //  userJOB?.cancel()
     }
 
     fun loadFiles(folderId: String?) {
-        fileJOB?.start()
+        fileJOB?.cancel()
+        currentFolderId = folderId
+        
         fileJOB = viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiStateFile.value = FileUiState.Loading
-
                 getFilesUseCase.execute(folderId).collect { result ->
-                    if (result is NetworkResult.Success) {
-                        _uiStateFile.value = FileUiState.Success(result.data)
+                    when (result) {
+                        is NetworkResult.Success -> {
+                            _uiStateFile.value = FileUiState.Success(result.data)
+                        }
+                        is NetworkResult.Error -> {
+                            _uiStateFile.value = FileUiState.Error(result.exception.message ?: "Error Files")
+                        }
                     }
                 }
-
             } catch (exception: Exception) {
-                _uiStateFile.value = FileUiState.Error(
-                    exception.message ?: "Unknown error"
-                )
+                _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
             }
         }
-       // fileJOB?.cancel()
     }
 
-    fun createFolder(name: String,folderId: String) {
-        createJOB?.start()
+    fun createFolder(name: String, folderId: String? = currentFolderId) {
+        if (folderId == null) return
+        
+        createJOB?.cancel()
         createJOB = viewModelScope.launch(Dispatchers.IO) {
             try {
-            createFolderUseCase.execute(folderId, name).collect { result ->
-                if (result is NetworkResult.Success) {
-                    // Refresh current folder
-                    loadFiles(folderId)
+                createFolderUseCase.execute(folderId, name).collect { result ->
+                    if (result is NetworkResult.Success) {
+                        loadFiles(folderId)
+                    }
                 }
+            } catch (exception: Exception) {
+                _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
             }
         }
-        catch (exception: Exception) {
-            _uiStateFile.value = FileUiState.Error(
-                exception.message ?: "Unknown error"
-            )
-        }
-
-        }
-        createJOB?.cancel()
     }
 
     fun deleteItem(itemId: String) {
-        deleteJOB?.start()
+        deleteJOB?.cancel()
         deleteJOB = viewModelScope.launch(Dispatchers.IO) {
             try {
                 deleteItemUseCase.execute(itemId).collect { result ->
                     if (result is NetworkResult.Success) {
-                        loadFiles(itemId)
+                        // RECHARGE LE DOSSIER ACTUEL au lieu de l'item supprimé
+                        loadFiles(currentFolderId)
                     }
                 }
+            } catch (exception: Exception) {
+                _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
             }
-               catch (exception: Exception) {
-                        _uiStateFile.value = FileUiState.Error(
-                            exception.message ?: "Unknown error"
-                        )
-                    }
         }
-        deleteJOB?.cancel()
     }
 }
