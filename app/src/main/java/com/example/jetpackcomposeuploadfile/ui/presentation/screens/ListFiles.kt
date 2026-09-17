@@ -199,7 +199,7 @@ fun ListFilesContent(files: List<FileItemModel>, viewModel: FileViewModel) {
                             horizontalArrangement= Arrangement.End) {
                             if (file.isDirectory == true) {
                                 IconButton(onClick = {
-                                    file.id?.let { viewModel.deleteItem(it) }
+                                 viewModel.deleteItem(file.id)
                                 }) {
                                     Icon(
                                         contentDescription = "supprimer",
@@ -208,7 +208,7 @@ fun ListFilesContent(files: List<FileItemModel>, viewModel: FileViewModel) {
                                     )
                                 }
                                 IconButton(onClick = {
-                                    file.id?.let { viewModel.loadFiles(it)}
+                                  viewModel.loadFiles(file.id)
                                 }) {
                                     Icon(
                                         contentDescription = "ouvrir",
@@ -218,7 +218,7 @@ fun ListFilesContent(files: List<FileItemModel>, viewModel: FileViewModel) {
                                 }
                             } else{
                                 IconButton(onClick = {
-                                    file.id?.let { viewModel.deleteItem(it) }
+                                  viewModel.deleteItem(file.id)
                                 }) {
                                     Icon(
                                         contentDescription = "supprimer",

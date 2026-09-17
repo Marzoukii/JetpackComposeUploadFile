@@ -102,7 +102,7 @@ class FileViewModel @Inject constructor(
         }
     }
 
-    fun deleteItem(itemId: String) {
+    fun deleteItem(itemId: String?) {
         deleteJOB?.cancel()
         deleteJOB = viewModelScope.launch(Dispatchers.IO) {
             try {
