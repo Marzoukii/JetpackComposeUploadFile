@@ -77,8 +77,6 @@ fun ListFiles(
                         color = Color.Black
                     )
                 }
-
-
             is FileUiState.Error -> {
                 Text(
                     text = state.message,
@@ -87,7 +85,6 @@ fun ListFiles(
                     textAlign = TextAlign.Center
                 )
             }
-
             is FileUiState.Success -> {
                 if (state.files.isEmpty()) {
                     Text(
@@ -102,7 +99,6 @@ fun ListFiles(
             }
         }
     }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -212,7 +208,7 @@ fun ListFilesContent(files: List<FileItemModel>, viewModel: FileViewModel) {
                                     )
                                 }
                                 IconButton(onClick = {
-
+                                    file.id?.let { viewModel.loadFiles(it)}
                                 }) {
                                     Icon(
                                         contentDescription = "ouvrir",
