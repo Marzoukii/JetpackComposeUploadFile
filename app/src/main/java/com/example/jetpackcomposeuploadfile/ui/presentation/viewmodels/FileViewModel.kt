@@ -43,15 +43,10 @@ class FileViewModel @Inject constructor(
             try {
                 _uiStateFile.value = FileUiState.Loading
                 getRootUseCase.execute().collect { result ->
-                    when (result) {
-                        is NetworkResult.Success -> {
+                        if (result is NetworkResult.Success)  {
                             currentFolderId = result.data
                             loadFiles(result.data)
                         }
-                        is NetworkResult.Error -> {
-                            _uiStateFile.value = FileUiState.Error(result.exception.message ?: "Error Root")
-                        }
-                    }
                 }
             } catch (exception: Exception) {
                 _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
@@ -67,14 +62,9 @@ class FileViewModel @Inject constructor(
             try {
                 _uiStateFile.value = FileUiState.Loading
                 getFilesUseCase.execute(folderId).collect { result ->
-                    when (result) {
-                        is NetworkResult.Success -> {
+                        if (result is NetworkResult.Success) {
                             _uiStateFile.value = FileUiState.Success(result.data)
                         }
-                        is NetworkResult.Error -> {
-                            _uiStateFile.value = FileUiState.Error(result.exception.message ?: "Error Files")
-                        }
-                    }
                 }
             } catch (exception: Exception) {
                 _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")

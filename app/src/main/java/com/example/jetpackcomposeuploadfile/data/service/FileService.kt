@@ -1,6 +1,6 @@
 package com.example.jetpackcomposeuploadfile.data.service
 
-import com.example.myapp.domain.model.FileItem
+import com.example.myapp.domain.model.FileItemModel
 import com.example.myapp.domain.model.FileItemJson
 import com.example.myapp.domain.model.UserJson
 import okhttp3.RequestBody
@@ -27,7 +27,7 @@ interface FileService {
     suspend fun createFolder(
         @Path("id") parentId: String,
         @Body body: Map<String, String>
-    ): FileItem
+    ): FileItemModel
 
     @POST("items/{id}")
     suspend fun uploadFile(
@@ -35,7 +35,7 @@ interface FileService {
         @Header("Content-Disposition") contentDisposition: String,
         @Header("Content-Type") contentType: String = "application/octet-stream",
         @Body fileBody: RequestBody
-    ): FileItem
+    ): FileItemModel
 
     @DELETE("items/{id}")
     suspend fun deleteItem(@Path("id") itemId: String?): Response<Unit>

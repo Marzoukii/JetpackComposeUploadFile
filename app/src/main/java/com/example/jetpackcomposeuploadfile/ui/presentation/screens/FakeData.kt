@@ -1,18 +1,18 @@
 package com.example.jetpackcomposeuploadfile.ui.presentation.screens
 
-import com.example.myapp.domain.model.FileItem
+import com.example.myapp.domain.model.FileItemModel
 
 object FakeData {
 
     val fileItems = listOf(
-        FileItem(
+        FileItemModel(
             id = "1",
             name = "Documents",
             isDirectory = true,
             date = "10/09/2026",
             contentType = "application/pdf"
         ),
-        FileItem(
+        FileItemModel(
             id = "2",
             parentId = "1",
             name = "CV_Chadi.pdf",
@@ -21,14 +21,14 @@ object FakeData {
             size = 245_760,
             contentType = "application/pdf"
         ),
-        FileItem(
+        FileItemModel(
             id = "3",
             parentId = "1",
             name = "Images",
             isDirectory = true,
             date = "08/09/2026"
         ),
-        FileItem(
+        FileItemModel(
             id = "4",
             parentId = "1",
             name = "photo.jpg",

@@ -1,7 +1,7 @@
 package com.example.myapp.domain.model
 
-data class User(
+data class UserModel(
     val firstName: String?=null,
     val lastName: String?=null,
-    val rootItem: FileItem?=null
+    val rootItem: FileItemModel?=null
 )

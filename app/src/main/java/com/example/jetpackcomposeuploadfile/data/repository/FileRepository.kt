@@ -1,33 +1,25 @@
 package com.example.jetpackcomposeuploadfile.data.repository
 
 import com.example.jetpackcomposeuploadfile.data.service.FileService
-import com.example.myapp.data.mapper.FileMapper
+import com.example.jetpackcomposeuploadfile.domain.mapper.FileMapper
 import com.example.jetpackcomposeuploadfile.data.NetworkResult
-import com.example.myapp.domain.model.FileItem
-import com.example.myapp.domain.model.User
+import com.example.myapp.domain.model.FileItemModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class FileRepository @Inject constructor( private var api: FileService , private  var mapper: FileMapper) {
 
-    suspend fun getCurrentUser(): Flow<NetworkResult<User>> = flow {
-        try {
-            emit(NetworkResult.Success(mapper.toUsersModel(api.getCurrentUser())))
-        } catch (e: Exception) {
-            emit(NetworkResult.Error(e))
-        }
-    }
     suspend fun getRootFolderId(): Flow<NetworkResult<String>> = flow {
         try {
-            val response = api.getCurrentUser().rootItem?.id.orEmpty()
-            emit(NetworkResult.Success(response))
+
+            emit(NetworkResult.Success(api.getCurrentUser().rootItem?.id.orEmpty()))
         } catch (e: Exception) {
             emit(NetworkResult.Error(e))
         }
     }
 
-    fun getFolderContent(folderId: String?): Flow<NetworkResult<List<FileItem>>> = flow {
+    fun getFolderContent(folderId: String?): Flow<NetworkResult<List<FileItemModel>>> = flow {
         try {
             val response = api.getFolderContent(folderId)
 
@@ -37,7 +29,7 @@ class FileRepository @Inject constructor( private var api: FileService , private
         }
     }
 
-    suspend fun createFolder(parentId: String, folderName: String): Flow<NetworkResult<FileItem>> =
+    suspend fun createFolder(parentId: String, folderName: String): Flow<NetworkResult<FileItemModel>> =
         flow {
             try {
                 val body = mapOf("name" to folderName)

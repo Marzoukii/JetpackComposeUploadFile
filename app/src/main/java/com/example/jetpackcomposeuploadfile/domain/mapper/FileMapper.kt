@@ -1,14 +1,12 @@
-package com.example.myapp.data.mapper
+package com.example.jetpackcomposeuploadfile.domain.mapper
 
-import com.example.myapp.domain.model.FileItem
+import com.example.myapp.domain.model.FileItemModel
 import com.example.myapp.domain.model.FileItemJson
-import com.example.myapp.domain.model.User
-import com.example.myapp.domain.model.UserJson
 import javax.inject.Inject
 
 class FileMapper @Inject constructor() {
     fun toFileItemsModel(json: FileItemJson?) =
-        FileItem(
+        FileItemModel(
             id = json?.id,
             parentId = json?.parentId,
             name = json?.name,
@@ -20,10 +18,4 @@ class FileMapper @Inject constructor() {
     fun toFileItemsModel(json: List<FileItemJson>) =
         json.map { toFileItemsModel(it) }
 
-    fun toUsersModel(json: UserJson?) =
-        User(
-            firstName = json?.firstName,
-            lastName = json?.lastName,
-            rootItem = toFileItemsModel(json?.rootItem)
-        )
 }
