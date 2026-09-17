@@ -43,10 +43,17 @@ class FileViewModel @Inject constructor(
             try {
                 _uiStateFile.value = FileUiState.Loading
                 getRootUseCase.execute().collect { result ->
-                        if (result is NetworkResult.Success)  {
+                    when (result) {
+                        is NetworkResult.Success -> {
                             currentFolderId = result.data
                             loadFiles(result.data)
                         }
+                        is NetworkResult.Error -> {
+
+                            val message = result.exception?.message ?: "An error occurred"
+                            _uiStateFile.value = FileUiState.Error(message)
+                        }
+                    }
                 }
             } catch (exception: Exception) {
                 _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
@@ -62,8 +69,14 @@ class FileViewModel @Inject constructor(
             try {
                 _uiStateFile.value = FileUiState.Loading
                 getFilesUseCase.execute(folderId).collect { result ->
-                        if (result is NetworkResult.Success) {
+                    when (result) {
+                        is NetworkResult.Success -> {
                             _uiStateFile.value = FileUiState.Success(result.data)
+                        }
+                        is NetworkResult.Error -> {
+                            val message = result.exception.message ?: "An error occurred"
+                            _uiStateFile.value = FileUiState.Error(message)
+                        }
                         }
                 }
             } catch (exception: Exception) {
@@ -95,7 +108,7 @@ class FileViewModel @Inject constructor(
             try {
                 deleteItemUseCase.execute(itemId).collect { result ->
                     if (result is NetworkResult.Success) {
-                        // RECHARGE LE DOSSIER ACTUEL au lieu de l'item supprimé
+
                         loadFiles(currentFolderId)
                     }
                 }

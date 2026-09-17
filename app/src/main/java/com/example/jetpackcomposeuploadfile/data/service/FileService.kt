@@ -17,7 +17,7 @@ import retrofit2.Response
 interface FileService {
 
     @GET("me")
-    suspend fun getCurrentUser(): UserJson
+    suspend fun getCurrentUser(): Response<UserJson>
 
     @GET("items/{id}")
     suspend fun getFolderContent(@Path("id") folderId: String?): List<FileItemJson>
