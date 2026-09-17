@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JetpackComposeUploadFileTheme {
-                // Utilise maintenant la fonction définie dans AppNavigation.kt
+
                 AppNavigation()
             }
         }

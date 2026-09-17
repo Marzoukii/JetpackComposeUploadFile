@@ -1,4 +1,4 @@
-package com.example.myapp.domain.model
+package com.example.jetpackcomposeuploadfile.data.model
 
 import com.google.gson.annotations.SerializedName
 

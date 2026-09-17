@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetpackcomposeuploadfile.R
 import com.example.jetpackcomposeuploadfile.ui.theme.JetpackComposeUploadFileTheme
 
-@Preview()
+@Preview
 @Composable
 fun GreetingPreview2() {
     JetpackComposeUploadFileTheme {
@@ -41,7 +41,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Box() {
+    Box {
         Image(
             modifier = Modifier.fillMaxSize(),
             painter = painterResource(id = R.drawable.loginbkg),

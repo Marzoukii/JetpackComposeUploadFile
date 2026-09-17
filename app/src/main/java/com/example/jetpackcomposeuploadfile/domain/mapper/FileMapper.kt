@@ -1,7 +1,7 @@
 package com.example.jetpackcomposeuploadfile.domain.mapper
 
 import com.example.myapp.domain.model.FileItemModel
-import com.example.myapp.domain.model.FileItemJson
+import com.example.jetpackcomposeuploadfile.data.model.FileItemJson
 import javax.inject.Inject
 
 class FileMapper @Inject constructor() {

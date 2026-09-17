@@ -247,10 +247,6 @@ fun ListFilesContent(files: List<FileItemModel>, viewModel: FileViewModel) {
         },
         floatingActionButtonPosition = FabPosition.End
     )
-
-
-
-
 }
 
 

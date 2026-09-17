@@ -1,5 +1,6 @@
 package com.example.myapp.domain.model
 
+import com.example.jetpackcomposeuploadfile.data.model.FileItemJson
 import com.google.gson.annotations.SerializedName
 
 data class UserJson(

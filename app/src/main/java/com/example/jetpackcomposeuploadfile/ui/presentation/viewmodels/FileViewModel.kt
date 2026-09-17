@@ -50,7 +50,7 @@ class FileViewModel @Inject constructor(
                         }
                         is NetworkResult.Error -> {
 
-                            val message = result.exception?.message ?: "An error occurred"
+                            val message = result.exception.message ?: "An error occurred"
                             _uiStateFile.value = FileUiState.Error(message)
                         }
                     }
@@ -79,7 +79,8 @@ class FileViewModel @Inject constructor(
                         }
                         }
                 }
-            } catch (exception: Exception) {
+            }
+            catch (exception: Exception) {
                 _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
             }
         }
