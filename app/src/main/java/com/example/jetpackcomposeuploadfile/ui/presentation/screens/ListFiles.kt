@@ -2,6 +2,7 @@ package com.example.jetpackcomposeuploadfile.ui.presentation.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -38,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -64,35 +67,38 @@ fun ListFiles(
     // 1. On observe l'état du ViewModel
     val uiState by viewModel.uiStateFile.collectAsState()
 
-
-        // 2. On gère l'affichage selon l'état
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         when (val state = uiState) {
             is FileUiState.Loading -> {
-//                CircularProgressIndicator(
-//                    modifier = Modifier.align(Alignment.Center),
-//                    color = Color.White
-//                )
-            }
+                    CircularProgressIndicator(
+                        color = Color.Black
+                    )
+                }
+
 
             is FileUiState.Error -> {
-//                Text(
-//                    text = state.message,
-//                    color = Color.Red,
-//                    modifier = Modifier.align(Alignment.Center).padding(16.dp),
-//                    textAlign = TextAlign.Center
-//                )
+                Text(
+                    text = state.message,
+                    color = Color.Red,
+                    modifier = Modifier.padding(16.dp),
+                    textAlign = TextAlign.Center
+                )
             }
 
             is FileUiState.Success -> {
                 if (state.files.isEmpty()) {
-//                    Text(
-//                        text = "Aucun fichier trouvé",
-//                        color = Color.Gray,
-//                        modifier = Modifier.align(Alignment.Center)
-//                    )
+                    Text(
+                        text = "Aucun fichier trouvé",
+                        color = Color.Gray,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
                 } else {
                     ListFilesContent(state.files, viewModel)
                 }
+            }
             }
         }
     }
@@ -142,8 +148,6 @@ fun ListFilesContent(files: List<FileItemModel>, viewModel: FileViewModel) {
                 colors = TopAppBarDefaults.
                 topAppBarColors(Color.Cyan))
         },
-
-
         content = {innerPadding->
             LazyColumn(
                 modifier = Modifier
@@ -160,7 +164,9 @@ fun ListFilesContent(files: List<FileItemModel>, viewModel: FileViewModel) {
                         horizontalArrangement = Arrangement.Start
                     ) {
                         Image(
-                            modifier = Modifier.size(40.dp).align(Alignment.CenterVertically),
+                            modifier = Modifier
+                                .size(40.dp)
+                                .align(Alignment.CenterVertically),
                             painter = if (file.isDirectory == true) painterResource(id = R.drawable.ic_folder)
                             else painterResource(id = R.drawable.ic_file),
                             contentDescription = null,
@@ -186,7 +192,7 @@ fun ListFilesContent(files: List<FileItemModel>, viewModel: FileViewModel) {
                         }
 
                         Text(
-                            "11/09/2026",
+                            file.date.toString(),
                             modifier = Modifier.padding(12.dp),
                             color = Color.Gray,
                             style = MaterialTheme.typography.bodyMedium,
@@ -236,9 +242,10 @@ fun ListFilesContent(files: List<FileItemModel>, viewModel: FileViewModel) {
 
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                showCreateFolderDialog = true
-            },containerColor= Color.Cyan) {
+            FloatingActionButton(
+                onClick = { showCreateFolderDialog = true },
+                containerColor = Color.Cyan
+            ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         },
