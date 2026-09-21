@@ -1,6 +1,7 @@
 package com.example.jetpackcomposeuploadfile.ui.presentation.screens
 
-import com.example.myapp.domain.model.FileItemModel
+import com.example.jetpackcomposeuploadfile.domain.model.FileItemModel
+
 
 object FakeData {
 

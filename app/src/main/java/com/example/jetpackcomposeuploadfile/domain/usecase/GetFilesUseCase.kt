@@ -2,7 +2,7 @@ package com.example.jetpackcomposeuploadfile.domain.usecase
 
 import com.example.jetpackcomposeuploadfile.data.repository.FileRepository
 import com.example.jetpackcomposeuploadfile.data.NetworkResult
-import com.example.myapp.domain.model.FileItemModel
+import com.example.jetpackcomposeuploadfile.domain.model.FileItemModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

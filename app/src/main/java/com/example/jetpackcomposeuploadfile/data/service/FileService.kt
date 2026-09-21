@@ -1,7 +1,8 @@
 package com.example.jetpackcomposeuploadfile.data.service
 
-import com.example.myapp.domain.model.FileItemModel
+
 import com.example.jetpackcomposeuploadfile.data.model.FileItemJson
+import com.example.jetpackcomposeuploadfile.domain.model.FileItemModel
 import com.example.myapp.domain.model.UserJson
 import okhttp3.RequestBody
 import okhttp3.ResponseBody

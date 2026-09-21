@@ -4,10 +4,18 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.jetpackcomposeuploadfile.ui.presentation.screens.FakeData
+import androidx.navigation.toRoute
+import com.example.jetpackcomposeuploadfile.domain.model.FileItemModel
+import com.example.jetpackcomposeuploadfile.ui.presentation.screens.FileDetailScreen
 import com.example.jetpackcomposeuploadfile.ui.presentation.screens.ListFiles
-import com.example.jetpackcomposeuploadfile.ui.presentation.screens.ListFilesFake
 import com.example.jetpackcomposeuploadfile.ui.presentation.screens.LoginScreen
+import kotlinx.serialization.Serializable
+
+@Serializable
+object Login
+
+@Serializable
+object ListFiles
 
 @Composable
 fun AppNavigation() {
@@ -15,18 +23,36 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = Login
     ) {
-        composable("login") {
+
+        composable<Login> {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate("listFiles")
+                    navController.navigate(ListFiles) {
+                        popUpTo(Login) { inclusive = true }
+                    }
                 }
             )
         }
 
-        composable("listFiles") {
-            ListFiles()
+        composable<ListFiles> {
+            ListFiles(
+                onFileClick = { file ->
+
+                    navController.navigate(file)
+                }
+            )
+        }
+
+
+        composable<FileItemModel> { backStackEntry ->
+            val file: FileItemModel = backStackEntry.toRoute()
+
+            FileDetailScreen(
+                file = file,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.jetpackcomposeuploadfile.data.response
 
-import com.example.myapp.domain.model.FileItemModel
+import com.example.jetpackcomposeuploadfile.domain.model.FileItemModel
+
 
 sealed class FileUiState {
     object Loading : FileUiState()

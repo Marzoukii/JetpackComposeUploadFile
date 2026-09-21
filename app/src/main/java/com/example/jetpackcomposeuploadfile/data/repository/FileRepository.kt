@@ -3,7 +3,7 @@ package com.example.jetpackcomposeuploadfile.data.repository
 import com.example.jetpackcomposeuploadfile.data.service.FileService
 import com.example.jetpackcomposeuploadfile.domain.mapper.FileMapper
 import com.example.jetpackcomposeuploadfile.data.NetworkResult
-import com.example.myapp.domain.model.FileItemModel
+import com.example.jetpackcomposeuploadfile.domain.model.FileItemModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
