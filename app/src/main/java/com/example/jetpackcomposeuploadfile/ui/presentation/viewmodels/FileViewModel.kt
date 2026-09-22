@@ -64,7 +64,6 @@ class FileViewModel @Inject constructor(
     fun loadFiles(folderId: String?) {
         fileJOB?.cancel()
         currentFolderId = folderId
-        
         fileJOB = viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiStateFile.value = FileUiState.Loading
@@ -88,7 +87,6 @@ class FileViewModel @Inject constructor(
 
     fun createFolder(name: String, folderId: String? = currentFolderId) {
         if (folderId == null) return
-        
         createJOB?.cancel()
         createJOB = viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -109,7 +107,6 @@ class FileViewModel @Inject constructor(
             try {
                 deleteItemUseCase.execute(itemId).collect { result ->
                     if (result is NetworkResult.Success) {
-
                         loadFiles(currentFolderId)
                     }
                 }

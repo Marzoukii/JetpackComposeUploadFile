@@ -54,10 +54,19 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             verticalArrangement = Arrangement.Center
 
         ) {
+            Image(
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(80.dp),
+                painter = painterResource(id = R.drawable.kia),
+                contentDescription = "Login Background"
+            )
             OutlinedTextField(
-                modifier = Modifier.width(250.dp).height(70.dp),
+                modifier = Modifier
+                    .width(250.dp)
+                    .height(70.dp),
                 value = username,
-                onValueChange = { username = it }, // Met à jour le texte
+                onValueChange = { username = it },
                 label = { Text(text = "Email") },
             )
             Spacer(modifier = Modifier.padding(5.dp))
@@ -66,19 +75,18 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     .width(250.dp)
                     .height(70.dp),
                 value = password,
-                onValueChange = { password = it }, // Met à jour le texte
+                onValueChange = { password = it },
                 label = { Text(text = "Password") },
                 visualTransformation = PasswordVisualTransformation()
             )
             Spacer(modifier = Modifier.padding(10.dp))
             Button(
-                onClick = { 
-                    // Simple validation avant de naviguer
+                onClick = {
+
                     if (username.isNotEmpty() && password.isNotEmpty()) {
                         onLoginSuccess()
                     }
-                }, 
-                modifier = Modifier.size(250.dp, 50.dp)
+                }, modifier = Modifier.size(250.dp, 50.dp)
             ) {
                 Text(text = "Login")
             }

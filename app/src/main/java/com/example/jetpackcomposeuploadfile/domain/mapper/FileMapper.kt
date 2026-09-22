@@ -15,6 +15,7 @@ class FileMapper @Inject constructor() {
             size = json?.size,
             contentType = json?.contentType
         )
+
     fun toFileItemsModel(json: List<FileItemJson>) =
         json.map { toFileItemsModel(it) }
 

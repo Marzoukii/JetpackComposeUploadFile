@@ -12,7 +12,6 @@ class FileRepository @Inject constructor( private var api: FileService , private
 
     suspend fun getRootFolderId(): Flow<NetworkResult<String>> = flow {
         try {
-
             emit(NetworkResult.Success(api.getCurrentUser().body()?.rootItem?.id.orEmpty()))
         } catch (e: Exception) {
             emit(NetworkResult.Error(e))

@@ -25,7 +25,6 @@ fun AppNavigation() {
         navController = navController,
         startDestination = Login
     ) {
-
         composable<Login> {
             LoginScreen(
                 onLoginSuccess = {
@@ -39,12 +38,10 @@ fun AppNavigation() {
         composable<ListFiles> {
             ListFiles(
                 onFileClick = { file ->
-
                     navController.navigate(file)
                 }
             )
         }
-
 
         composable<FileItemModel> { backStackEntry ->
             val file: FileItemModel = backStackEntry.toRoute()

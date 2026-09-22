@@ -43,6 +43,7 @@ fun ListFiles(
             is FileUiState.Loading -> {
                 CircularProgressIndicator(color = Color.Black)
             }
+
             is FileUiState.Error -> {
                 Text(
                     text = state.message,
@@ -51,6 +52,7 @@ fun ListFiles(
                     textAlign = TextAlign.Center
                 )
             }
+
             is FileUiState.Success -> {
                 if (state.files.isEmpty()) {
                     Text(
@@ -69,7 +71,7 @@ fun ListFiles(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListFilesContent(
-    files: List<FileItemModel>, 
+    files: List<FileItemModel>,
     viewModel: FileViewModel,
     onFileClick: (FileItemModel) -> Unit
 ) {
@@ -103,96 +105,91 @@ fun ListFilesContent(
                 TextButton(onClick = { showCreateFolderDialog = false }) {
                     Text("Annuler")
                 }
-            }
-        )
+            })
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = { Text("My Files") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Cyan)
-            )
-        },
-        content = { innerPadding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                items(files) { file ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onFileClick(file) }
-                            .padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            modifier = Modifier.size(40.dp),
-                            painter = if (file.isDirectory == true) painterResource(id = R.drawable.ic_folder)
-                            else painterResource(id = R.drawable.ic_file),
-                            contentDescription = null,
-                            colorFilter = if (file.isDirectory == true) ColorFilter.tint(Color.Cyan) else ColorFilter.tint(Color.DarkGray)
+        modifier = Modifier.fillMaxSize(), topBar = {
+        TopAppBar(
+            title = { Text("My Files") },
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Cyan)
+        )
+    }, content = { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            items(files) { file ->
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onFileClick(file) }
+                    .padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        modifier = Modifier.size(40.dp),
+                        painter = if (file.isDirectory == true) painterResource(id = R.drawable.ic_folder)
+                        else painterResource(id = R.drawable.ic_file),
+                        contentDescription = null,
+                        colorFilter = if (file.isDirectory == true) ColorFilter.tint(Color.Cyan) else ColorFilter.tint(
+                            Color.DarkGray
                         )
-                        Column(
-                            modifier = Modifier
-                                .padding(start = 16.dp)
-                                .weight(1f)
-                        ) {
-                            Text(
-                                file.name ?: "Folder",
-                                style = MaterialTheme.typography.titleSmall,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                            Text(
-                                file.contentType ?: "Unknown",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Gray
+                    )
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .weight(1f)
+                    ) {
+                        Text(
+                            file.name ?: "Folder",
+                            style = MaterialTheme.typography.titleSmall,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        Text(
+                            file.contentType ?: "Unknown",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
+
+                    Text(
+                        file.date ?: "",
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        color = Color.Gray,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { viewModel.deleteItem(file.id ?: "") }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_delete_24),
+                                contentDescription = "supprimer",
+                                tint = Color.Gray
                             )
                         }
-
-                        Text(
-                            file.date ?: "",
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            color = Color.Gray,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                        
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { viewModel.deleteItem(file.id ?: "") }) {
+                        if (file.isDirectory == true) {
+                            IconButton(onClick = { viewModel.loadFiles(file.id ?: "") }) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.ic_delete_24),
-                                    contentDescription = "supprimer",
+                                    painter = painterResource(id = R.drawable.ic_next),
+                                    contentDescription = "ouvrir",
                                     tint = Color.Gray
                                 )
-                            }
-                            if (file.isDirectory == true) {
-                                IconButton(onClick = { viewModel.loadFiles(file.id ?: "") }) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_next),
-                                        contentDescription = "ouvrir",
-                                        tint = Color.Gray
-                                    )
-                                }
                             }
                         }
                     }
                 }
             }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showCreateFolderDialog = true },
-                containerColor = Color.Cyan
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
-            }
-        },
-        floatingActionButtonPosition = FabPosition.End
+        }
+    }, floatingActionButton = {
+        FloatingActionButton(
+            onClick = { showCreateFolderDialog = true },
+            containerColor = Color.Cyan
+        ) {
+            Icon(Icons.Default.Add,
+                contentDescription = "Add")
+        }
+    }, floatingActionButtonPosition = FabPosition.End
     )
 }

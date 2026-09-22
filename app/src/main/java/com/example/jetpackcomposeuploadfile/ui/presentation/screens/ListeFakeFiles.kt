@@ -2,14 +2,38 @@ package com.example.jetpackcomposeuploadfile.ui.presentation.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,37 +59,32 @@ fun GreetingPreviewFake() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListFilesFake(
-    files: List<FileItemModel>,
-    onFileClick: (FileItemModel) -> Unit
+    files: List<FileItemModel>, onFileClick: (FileItemModel) -> Unit
 ) {
     var showCreateFolderDialog by remember { mutableStateOf(false) }
 
     if (showCreateFolderDialog) {
         CreateFolderDialog(
             onDismiss = { showCreateFolderDialog = false },
-            onCreate = { /* Logique de création */ showCreateFolderDialog = false }
-        )
+            onCreate = {  showCreateFolderDialog = false })
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = { Text("My Files") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Cyan)
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showCreateFolderDialog = true },
-                containerColor = Color.Cyan
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
-            }
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+        TopAppBar(
+            title = { Text("My Files") },
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Cyan)
+        )
+    }, floatingActionButton = {
+        FloatingActionButton(
+            onClick = { showCreateFolderDialog = true }, containerColor = Color.Cyan
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Add")
         }
-    ) { innerPadding ->
+    }) { innerPadding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             contentPadding = PaddingValues(16.dp)
         ) {
@@ -83,8 +102,7 @@ fun FileItemRow(file: FileItemModel, onFileClick: (FileItemModel) -> Unit) {
             .fillMaxWidth()
             .clickable { onFileClick(file) }
             .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+        verticalAlignment = Alignment.CenterVertically) {
         Image(
             modifier = Modifier.size(40.dp),
             painter = painterResource(
@@ -95,10 +113,21 @@ fun FileItemRow(file: FileItemModel, onFileClick: (FileItemModel) -> Unit) {
         )
 
         Column(
-            modifier = Modifier.padding(start = 12.dp).weight(1f)
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .weight(1f)
         ) {
-            Text(text = file.name ?: "", style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(text = file.contentType ?: "Dossier", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text(
+                text = file.name ?: "",
+                style = MaterialTheme.typography.titleSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = file.contentType ?: "Dossier",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
         }
 
         Text(
@@ -119,10 +148,28 @@ fun FileItemRow(file: FileItemModel, onFileClick: (FileItemModel) -> Unit) {
 fun CreateFolderDialog(onDismiss: () -> Unit, onCreate: (String) -> Unit) {
     var name by remember { mutableStateOf("") }
     AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Nouveau dossier") },
-        text = { OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Nom") }) },
-        confirmButton = { Button(onClick = { onCreate(name) }) { Text("Créer") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annuler") } }
-    )
+        onDismissRequest =
+            onDismiss,
+        title = {
+        Text("Nouveau dossier")
+    }, text = {
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = {
+                Text("Nom")
+            })
+    }, confirmButton =
+        {
+        Button(onClick = {
+            onCreate(name)
+        }) {
+            Text("Créer")
+        }
+    },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Annuler")
+            }
+        })
 }
