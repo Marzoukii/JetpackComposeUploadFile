@@ -109,7 +109,8 @@ fun ListFilesContent(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(), topBar = {
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
         TopAppBar(
             title = { Text("My Files") },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Cyan)

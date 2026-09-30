@@ -40,7 +40,6 @@ fun GreetingPreview2() {
 fun LoginScreen(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
     Box {
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -68,7 +67,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 value = username,
                 onValueChange = { username = it },
                 label = { Text(text = "Email") },
-            )
+                )
             Spacer(modifier = Modifier.padding(5.dp))
             OutlinedTextField(
                 modifier = Modifier
@@ -82,7 +81,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             Spacer(modifier = Modifier.padding(10.dp))
             Button(
                 onClick = {
-
                     if (username.isNotEmpty() && password.isNotEmpty()) {
                         onLoginSuccess()
                     }

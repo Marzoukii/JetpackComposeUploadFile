@@ -19,15 +19,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FileViewModel @Inject constructor(
-    private var getFilesUseCase: GetFilesUseCase,
-    private var getRootUseCase: GetRootUseCase,
-    private var createFolderUseCase: CreateFolderUseCase,
-    private var deleteItemUseCase: DeleteItemUseCase
+    private val getFilesUseCase: GetFilesUseCase,
+    private val getRootUseCase: GetRootUseCase,
+    private val createFolderUseCase: CreateFolderUseCase,
+    private val deleteItemUseCase: DeleteItemUseCase
 ) : ViewModel() {
-    private var fileJOB: Job? = null
-    private var userJOB: Job? = null
-    private var deleteJOB: Job? = null
-    private var createJOB: Job? = null
+
+    private var fileJob: Job? = null
+    private var userJob: Job? = null
+    private var actionJob: Job? = null
+
     private val _uiStateFile = MutableStateFlow<FileUiState>(FileUiState.Loading)
     val uiStateFile: StateFlow<FileUiState> = _uiStateFile.asStateFlow()
 
@@ -38,81 +39,65 @@ class FileViewModel @Inject constructor(
     }
 
     fun loadRoot() {
-        userJOB?.cancel()
-        userJOB = viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _uiStateFile.value = FileUiState.Loading
-                getRootUseCase.execute().collect { result ->
-                    when (result) {
-                        is NetworkResult.Success -> {
-                            currentFolderId = result.data
-                            loadFiles(result.data)
-                        }
-                        is NetworkResult.Error -> {
-
-                            val message = result.exception.message ?: "An error occurred"
-                            _uiStateFile.value = FileUiState.Error(message)
-                        }
+        userJob?.cancel()
+        userJob = viewModelScope.launch(Dispatchers.IO) {
+            _uiStateFile.value = FileUiState.Loading
+            getRootUseCase.execute().collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        currentFolderId = result.data
+                        loadFiles(result.data)
                     }
+                    is NetworkResult.Error -> handleError(result.exception)
                 }
-            } catch (exception: Exception) {
-                _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
             }
         }
     }
 
     fun loadFiles(folderId: String?) {
-        fileJOB?.cancel()
+        fileJob?.cancel()
         currentFolderId = folderId
-        fileJOB = viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _uiStateFile.value = FileUiState.Loading
-                getFilesUseCase.execute(folderId).collect { result ->
-                    when (result) {
-                        is NetworkResult.Success -> {
-                            _uiStateFile.value = FileUiState.Success(result.data)
-                        }
-                        is NetworkResult.Error -> {
-                            val message = result.exception.message ?: "An error occurred"
-                            _uiStateFile.value = FileUiState.Error(message)
-                        }
-                        }
+        fileJob = viewModelScope.launch(Dispatchers.IO) {
+            _uiStateFile.value = FileUiState.Loading
+            getFilesUseCase.execute(folderId).collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        _uiStateFile.value = FileUiState.Success(result.data)
+                    }
+                    is NetworkResult.Error -> handleError(result.exception)
                 }
-            }
-            catch (exception: Exception) {
-                _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
             }
         }
     }
 
-    fun createFolder(name: String, folderId: String? = currentFolderId) {
-        if (folderId == null) return
-        createJOB?.cancel()
-        createJOB = viewModelScope.launch(Dispatchers.IO) {
-            try {
-                createFolderUseCase.execute(folderId, name).collect { result ->
-                    if (result is NetworkResult.Success) {
-                        loadFiles(folderId)
-                    }
+    fun createFolder(name: String) {
+        val parentId = currentFolderId ?: return
+        actionJob?.cancel()
+        actionJob = viewModelScope.launch(Dispatchers.IO) {
+            createFolderUseCase.execute(parentId, name).collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> loadFiles(parentId)
+                    is NetworkResult.Error -> handleError(result.exception)
                 }
-            } catch (exception: Exception) {
-                _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
             }
         }
     }
 
     fun deleteItem(itemId: String?) {
-        deleteJOB?.cancel()
-        deleteJOB = viewModelScope.launch(Dispatchers.IO) {
-            try {
-                deleteItemUseCase.execute(itemId).collect { result ->
-                    if (result is NetworkResult.Success) {
-                        loadFiles(currentFolderId)
-                    }
+        if (itemId == null) return
+        actionJob?.cancel()
+        actionJob = viewModelScope.launch(Dispatchers.IO) {
+            deleteItemUseCase.execute(itemId).collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> loadFiles(currentFolderId)
+                    is NetworkResult.Error -> handleError(result.exception)
                 }
-            } catch (exception: Exception) {
-                _uiStateFile.value = FileUiState.Error(exception.message ?: "Unknown error")
             }
         }
+    }
+
+    private fun handleError(exception: Exception) {
+        val message = exception.message ?: "Une erreur inattendue est survenue"
+        _uiStateFile.value = FileUiState.Error(message)
     }
 }
